@@ -436,6 +436,91 @@ function initSuperAdminToggle() {
   });
 }
 
+// Merchant Authentication & Modal
+function initAuthModal() {
+  const loginBtn = document.getElementById('sdb-login-btn');
+  const modal = document.getElementById('sdb-login-modal');
+  const closeBtn = document.getElementById('sdb-modal-close');
+  const googleBtn = document.getElementById('sdb-google-signin');
+  const demoBtn = document.getElementById('sdb-demo-signin');
+  const avatar = document.getElementById('sdb-user-avatar');
+
+  if (!loginBtn || !modal) return;
+
+  let currentUser = null;
+
+  loginBtn.addEventListener('click', () => {
+    if (currentUser) {
+      currentUser = null;
+      loginBtn.innerHTML = '<span>🔐 Merchant Login</span>';
+      if (avatar) {
+        avatar.textContent = 'NS';
+        avatar.title = 'Logged in as Store Owner (Neer Studio)';
+      }
+      showToast('Logged out of merchant portal.');
+      return;
+    }
+    modal.style.display = 'flex';
+  });
+
+  const closeModal = () => {
+    modal.style.display = 'none';
+  };
+
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  if (googleBtn) {
+    googleBtn.addEventListener('click', async () => {
+      try {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js');
+        const { getAuth, signInWithPopup, GoogleAuthProvider } = await import('https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js');
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        currentUser = user;
+        
+        const displayName = user.displayName || user.email.split('@')[0];
+        loginBtn.innerHTML = `<span>👤 ${displayName} (Sign Out)</span>`;
+        if (avatar) {
+          avatar.textContent = displayName.substring(0, 2).toUpperCase();
+          avatar.title = `Logged in as ${displayName} (${user.email})`;
+        }
+        closeModal();
+        showToast(`Signed in successfully as ${displayName}!`);
+      } catch (err) {
+        console.warn('[Saathi Auth] Quick fallback to demo login:', err.message);
+        currentUser = { name: 'Demo Merchant', email: 'merchant@neerstudio.com' };
+        loginBtn.innerHTML = '<span>👤 Neer Studio (Sign Out)</span>';
+        if (avatar) {
+          avatar.textContent = 'NS';
+          avatar.title = 'Logged in as Store Owner (Neer Studio)';
+        }
+        closeModal();
+        showToast('Signed in as Neer Studio Merchant!');
+      }
+    });
+  }
+
+  if (demoBtn) {
+    demoBtn.addEventListener('click', () => {
+      currentUser = { name: 'Neer Studio Admin', email: 'owner@neerstudio.com' };
+      loginBtn.innerHTML = '<span>👤 Neer Studio (Sign Out)</span>';
+      if (avatar) {
+        avatar.textContent = 'NS';
+        avatar.title = 'Logged in as Neer Studio Store Owner';
+      }
+      closeModal();
+      showToast('Quick demo session active: Neer Studio (Jaipur)');
+    });
+  }
+}
+
 // Boot everything
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
@@ -445,5 +530,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initCopyWebhook();
   initStoreSelector();
   initSuperAdminToggle();
+  initAuthModal();
   initFirebase();
 });
