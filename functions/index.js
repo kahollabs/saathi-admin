@@ -31,7 +31,8 @@ export const shopifyWebhook = onRequest(
     region: 'asia-south1',
     memory: '256MiB',
     timeoutSeconds: 30,
-    cors: false
+    cors: false,
+    invoker: 'public'
   },
   async (req, res) => {
     if (req.method !== 'POST') {
@@ -95,7 +96,8 @@ export const whatsappWebhook = onRequest(
     region: 'asia-south1',
     memory: '512MiB',
     timeoutSeconds: 45,
-    cors: false
+    cors: false,
+    invoker: 'public'
   },
   async (req, res) => {
     // A. Meta Webhook Verification (GET)
@@ -272,7 +274,8 @@ export const processDelayedCheckouts = onSchedule(
 export const simulateCart = onRequest(
   {
     region: 'asia-south1',
-    cors: true
+    cors: true,
+    invoker: 'public'
   },
   async (req, res) => {
     const sampleCart = {

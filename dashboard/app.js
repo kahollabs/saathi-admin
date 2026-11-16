@@ -167,6 +167,21 @@ function initSimulateWebhook() {
       feed.insertBefore(item, feed.firstChild);
     }
 
+    // Call live backend simulation API in background to persist in Cloud Firestore
+    try {
+      fetch('https://simulatecart-wb5fbwbodq-el.a.run.app', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: cart.name,
+          phone: cart.phone,
+          storeId: 'neer',
+          item: cart.item,
+          price: cart.price
+        })
+      }).catch(() => {});
+    } catch (_) {}
+
     showToast(`⚡ Shopify Webhook: Inbound checkout received for ${cart.name} (${cart.price}). Delay queue initialized.`);
   });
 }
