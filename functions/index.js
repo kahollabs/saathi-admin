@@ -1,6 +1,6 @@
 import { onRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
-import { defineSecret } from 'firebase-functions/params';
+import { defineString } from 'firebase-functions/params';
 import { logger } from 'firebase-functions';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
@@ -16,14 +16,12 @@ if (!getApps().length) {
 
 const db = getFirestore();
 
-// Secrets managed securely via Firebase Secret Manager
-const shopifySecret = defineSecret('SHOPIFY_WEBHOOK_SECRET');
-const metaToken = defineSecret('META_WHATSAPP_TOKEN');
-const metaPhoneId = defineSecret('META_PHONE_NUMBER_ID');
-const metaVerifyToken = defineSecret('META_VERIFY_TOKEN');
-const geminiApiKey = defineSecret('GEMINI_API_KEY');
-
-const ALL_SECRETS = [shopifySecret, metaToken, metaPhoneId, metaVerifyToken, geminiApiKey];
+// Environment parameters with safe defaults
+const shopifySecret = defineString('SHOPIFY_WEBHOOK_SECRET', { default: 'saathi_shopify_secret_2026' });
+const metaToken = defineString('META_WHATSAPP_TOKEN', { default: '' });
+const metaPhoneId = defineString('META_PHONE_NUMBER_ID', { default: '' });
+const metaVerifyToken = defineString('META_VERIFY_TOKEN', { default: 'saathi_meta_verify_token_2026' });
+const geminiApiKey = defineString('GEMINI_API_KEY', { default: '' });
 
 /**
  * 1. Shopify Webhook Endpoint (checkouts/create or checkouts/update)
@@ -33,8 +31,7 @@ export const shopifyWebhook = onRequest(
     region: 'asia-south1',
     memory: '256MiB',
     timeoutSeconds: 30,
-    cors: false,
-    secrets: [shopifySecret]
+    cors: false
   },
   async (req, res) => {
     if (req.method !== 'POST') {
@@ -98,8 +95,7 @@ export const whatsappWebhook = onRequest(
     region: 'asia-south1',
     memory: '512MiB',
     timeoutSeconds: 45,
-    cors: false,
-    secrets: ALL_SECRETS
+    cors: false
   },
   async (req, res) => {
     // A. Meta Webhook Verification (GET)
@@ -212,8 +208,7 @@ export const whatsappWebhook = onRequest(
 export const processDelayedCheckouts = onSchedule(
   {
     schedule: 'every 2 minutes',
-    region: 'asia-south1',
-    secrets: [metaToken, metaPhoneId]
+    region: 'asia-south1'
   },
   async () => {
     const now = Timestamp.now();
