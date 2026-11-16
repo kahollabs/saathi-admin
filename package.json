@@ -1,0 +1,25 @@
+{
+  "name": "saathi-by-kahol-labs",
+  "version": "1.0.0",
+  "description": "Saathi by Kahol Labs - Autonomous WhatsApp Sales Recovery Engine for Shopify & WooCommerce",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "deploy": "firebase deploy --only functions,firestore --project kahol-labs-website"
+  },
+  "keywords": [
+    "saathi",
+    "kahol-labs",
+    "shopify",
+    "abandoned-cart",
+    "whatsapp-cloud-api",
+    "gemini-ai",
+    "sales-recovery"
+  ],
+  "author": "Abhinadan Kahol <kahollabs@gmail.com> (https://kahollabs.com)",
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,29 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "saathi-backend",
+      "runtime": "nodejs22",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "*-debug.log",
+        ".secret.local",
+        ".env*"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "functions": {
+      "port": 5002
+    },
+    "firestore": {
+      "port": 8081
+    },
+    "singleProjectMode": true
+  }
+}

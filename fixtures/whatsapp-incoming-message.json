@@ -1,0 +1,39 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "10928374619283",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "+919876543210",
+              "phone_number_id": "918273645019"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Rahul Sharma"
+                },
+                "wa_id": "919871234567"
+              }
+            ],
+            "messages": [
+              {
+                "from": "919871234567",
+                "id": "wamid.HBgMOTE5ODcxMjM0NTY3FQIAERgSQjU5ODcyNEM2QTQ0ODg4MzAxAA==",
+                "timestamp": "1731745740",
+                "text": {
+                  "body": "Bhaiya mera chest 41 inch hai, M size fit aayega ya tight hoga?"
+                },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": 89281726152,
+  "token": "c1-89281726152-saathi",
+  "cart_token": "cart-token-99120",
+  "email": "rahul.sharma@gmail.com",
+  "created_at": "2026-11-16T14:12:00+05:30",
+  "updated_at": "2026-11-16T14:12:00+05:30",
+  "abandoned_checkout_url": "https://neerstudio.com/checkouts/c/89281726152/recover?key=saathi9281a",
+  "total_price": "1499.00",
+  "currency": "INR",
+  "customer": {
+    "id": 7812903,
+    "first_name": "Rahul",
+    "last_name": "Sharma",
+    "phone": "+91 98712 34567",
+    "email": "rahul.sharma@gmail.com"
+  },
+  "line_items": [
+    {
+      "id": 19283719,
+      "title": "Everyday Cotton Kurta",
+      "variant_title": "Sage / Size M",
+      "quantity": 1,
+      "price": "1499.00",
+      "sku": "NEER-KURTA-SAGE-M"
+    }
+  ],
+  "shipping_address": {
+    "name": "Rahul Sharma",
+    "city": "Jaipur",
+    "province": "Rajasthan",
+    "country": "India",
+    "phone": "9871234567"
+  }
+}

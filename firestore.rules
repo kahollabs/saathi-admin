@@ -1,0 +1,37 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isSuperAdmin() {
+      return isAuthenticated() && (request.auth.token.email == 'kahollabs@gmail.com' || request.auth.token.role == 'super_admin');
+    }
+    
+    function isStoreOwner(storeId) {
+      return isAuthenticated() && (request.auth.uid == storeId || request.auth.token.storeId == storeId || isSuperAdmin());
+    }
+
+    // 1. Store profile & Knowledge Base
+    match /stores/{storeId} {
+      allow read: if isStoreOwner(storeId);
+      allow write: if isStoreOwner(storeId);
+    }
+
+    // 2. Abandoned Checkouts
+    match /abandoned_checkouts/{checkoutId} {
+      allow read: if isAuthenticated() && (resource.data.storeId == request.auth.token.storeId || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    // 3. Live Conversations & Messages
+    match /conversations/{conversationId} {
+      allow read: if isAuthenticated() && (resource.data.storeId == request.auth.token.storeId || isSuperAdmin());
+      allow write: if isAuthenticated() && (resource.data.storeId == request.auth.token.storeId || isSuperAdmin());
+    }
+  }
+}
