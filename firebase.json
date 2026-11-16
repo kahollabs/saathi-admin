@@ -1,4 +1,9 @@
 {
+  "hosting": {
+    "public": "dashboard",
+    "cleanUrls": true,
+    "trailingSlash": false
+  },
   "functions": [
     {
       "source": "functions",
@@ -23,6 +28,9 @@
     },
     "firestore": {
       "port": 8081
+    },
+    "hosting": {
+      "port": 5003
     },
     "singleProjectMode": true
   }

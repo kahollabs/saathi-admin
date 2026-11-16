@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saathi by Kahol Labs | Autonomous AI Sales Recovery Dashboard</title>
+  <meta name="description" content="24/7 AI Sales Partner recovering abandoned checkouts for Shopify & WooCommerce brands. Powered by Firebase and Gemini 2.0.">
+  <meta name="theme-color" content="#183c32">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>स</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body id="top">
+
+  <!-- Real-Time Toast Container -->
+  <div id="sdb-toast-container" class="sdb-toast-container" aria-live="polite"></div>
+
+  <section class="section sdb-container">
+    <!-- Top Bar -->
+    <header class="sdb-topbar">
+      <div class="sdb-topbar-left">
+        <div class="sdb-logo-group">
+          <span class="sdb-mark" aria-hidden="true">स</span>
+          <div>
+            <strong class="sdb-brand">Saathi by Kahol Labs</strong>
+            <span class="sdb-sub">Aapke Online Business ka AI Sales Partner</span>
+          </div>
+        </div>
+
+        <div class="sdb-store-selector">
+          <span class="sdb-store-icon">🏬</span>
+          <select id="sdb-active-store" aria-label="Select Store">
+            <option value="neer">Neer Studio (Jaipur) · Shopify</option>
+            <option value="royal">Royal Ridaz (Delhi) · WooCommerce</option>
+            <option value="mountain">Mountain Bee Honey (Shimla) · Shopify</option>
+          </select>
+          <span class="sdb-badge sdb-badge-green" id="sdb-conn-status"><span class="sdb-dot"></span> Live Firestore</span>
+        </div>
+      </div>
+
+      <div class="sdb-topbar-right">
+        <button type="button" class="sdb-btn sdb-btn-sim" id="sdb-simulate-webhook">
+          <span>⚡ Simulate Inbound Cart</span>
+        </button>
+        <span class="sdb-badge sdb-badge-gold" title="Firebase Project ID">kahollabs-saathi</span>
+        <div class="sdb-avatar" title="Logged in as Store Owner (Neer Studio)">NS</div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="sdb-nav-tabs" aria-label="Dashboard Navigation">
+      <button type="button" class="sdb-tab is-active" data-tab="overview">
+        <span class="sdb-tab-icon">📊</span> Overview &amp; Revenue
+      </button>
+      <button type="button" class="sdb-tab" data-tab="conversations">
+        <span class="sdb-tab-icon">💬</span> Live AI Sales Chats <span class="sdb-tab-pill" id="sdb-live-chat-count">3 Active</span>
+      </button>
+      <button type="button" class="sdb-tab" data-tab="knowledge">
+        <span class="sdb-tab-icon">🧠</span> Saathi AI Knowledge Base
+      </button>
+      <button type="button" class="sdb-tab" data-tab="settings">
+        <span class="sdb-tab-icon">⚙️</span> Webhook &amp; Store Setup
+      </button>
+      <button type="button" class="sdb-tab" data-tab="super-admin">
+        <span class="sdb-tab-icon">⚡</span> Super Admin Platform
+      </button>
+    </nav>
+
+    <!-- TAB 1: OVERVIEW & REVENUE -->
+    <div class="sdb-tab-content is-active" id="tab-overview">
+      <div class="sdb-metrics-grid">
+        <div class="sdb-metric-card sdb-card-accent">
+          <div class="sdb-metric-top">
+            <span class="sdb-metric-label">Recovered Revenue (This Month)</span>
+            <span class="sdb-trend sdb-trend-up">↑ +28.4%</span>
+          </div>
+          <strong class="sdb-metric-value" id="sdb-stat-recovered-val">₹58,460</strong>
+          <p class="sdb-metric-note">39 completed orders rescued from drop-off</p>
+        </div>
+
+        <div class="sdb-metric-card">
+          <div class="sdb-metric-top">
+            <span class="sdb-metric-label">Recovery Conversion Rate</span>
+            <span class="sdb-trend sdb-trend-up">↑ 24.1%</span>
+          </div>
+          <strong class="sdb-metric-value" id="sdb-stat-conversion">24.1%</strong>
+          <p class="sdb-metric-note">39 converted out of 162 eligible checkouts</p>
+        </div>
+
+        <div class="sdb-metric-card">
+          <div class="sdb-metric-top">
+            <span class="sdb-metric-label">Incomplete Carts Detected</span>
+            <span class="sdb-trend sdb-trend-neutral" id="sdb-live-feed-pill">Synced</span>
+          </div>
+          <strong class="sdb-metric-value" id="sdb-stat-detected">162</strong>
+          <p class="sdb-metric-note">Webhook trigger latency: avg 240ms</p>
+        </div>
+
+        <div class="sdb-metric-card">
+          <div class="sdb-metric-top">
+            <span class="sdb-metric-label">Gemini 2.0 AI Resolution Speed</span>
+            <span class="sdb-trend sdb-trend-up">4.2s avg</span>
+          </div>
+          <strong class="sdb-metric-value">4.2 sec</strong>
+          <p class="sdb-metric-note">Average objection solving &amp; payment link delivery</p>
+        </div>
+      </div>
+
+      <div class="sdb-two-col">
+        <!-- Activity Stream -->
+        <div class="sdb-panel">
+          <div class="sdb-panel-header">
+            <div>
+              <h3>Real-Time Sales Activity Stream</h3>
+              <p>Events captured by Shopify webhooks and customer WhatsApp replies</p>
+            </div>
+            <span class="sdb-live-indicator"><span class="sdb-pulse"></span> Firestore Sync</span>
+          </div>
+          <ol class="sdb-activity-feed" id="sdb-activity-feed">
+            <li class="sdb-feed-item is-success">
+              <span class="sdb-feed-time">2 mins ago</span>
+              <div class="sdb-feed-body">
+                <strong>Order Recovered: ₹1,499</strong>
+                <p>Rahul Sharma confirmed <em>Everyday Cotton Kurta (Size L)</em> after sizing doubt resolved.</p>
+              </div>
+              <span class="sdb-tag sdb-tag-green">PAID ✅</span>
+            </li>
+            <li class="sdb-feed-item is-chatting">
+              <span class="sdb-feed-time">8 mins ago</span>
+              <div class="sdb-feed-body">
+                <strong>Customer Sizing Query</strong>
+                <p>Pooja Verma asked: <em>"Blouse ka chest measurement kya hai?"</em>. Saathi suggested Size 38 based on chart.</p>
+              </div>
+              <span class="sdb-tag sdb-tag-blue">CHATTING 💬</span>
+            </li>
+            <li class="sdb-feed-item is-detected">
+              <span class="sdb-feed-time">14 mins ago</span>
+              <div class="sdb-feed-body">
+                <strong>New Abandoned Cart Detected</strong>
+                <p>Amit Roy left <em>Embroidered Silk Stole (₹999)</em>. 15-minute verification delay running.</p>
+              </div>
+              <span class="sdb-tag sdb-tag-amber">DELAY WAIT ⏳</span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Objection Resolution Breakdown -->
+        <div class="sdb-panel">
+          <div class="sdb-panel-header">
+            <div>
+              <h3>Objection Resolution Breakdown</h3>
+              <p>Top customer hesitations handled by Saathi this week</p>
+            </div>
+          </div>
+          <div class="sdb-bars-list">
+            <div class="sdb-bar-group">
+              <div class="sdb-bar-label">
+                <span>Sizing &amp; Fit Inquiries (M vs L, Chest Measurement)</span>
+                <strong>58% (72 chats)</strong>
+              </div>
+              <div class="sdb-bar-track"><div class="sdb-bar-fill" style="width: 58%;"></div></div>
+            </div>
+            <div class="sdb-bar-group">
+              <div class="sdb-bar-label">
+                <span>Fabric &amp; Shrinkage Proof (100% Pre-Shrunk Cotton)</span>
+                <strong>24% (30 chats)</strong>
+              </div>
+              <div class="sdb-bar-track"><div class="sdb-bar-fill" style="width: 24%;"></div></div>
+            </div>
+            <div class="sdb-bar-group">
+              <div class="sdb-bar-label">
+                <span>Delivery Timeline &amp; COD Confirmation</span>
+                <strong>12% (15 chats)</strong>
+              </div>
+              <div class="sdb-bar-track"><div class="sdb-bar-fill" style="width: 12%;"></div></div>
+            </div>
+            <div class="sdb-bar-group">
+              <div class="sdb-bar-label">
+                <span>Human Stylist Escalation Requested</span>
+                <strong>6% (7 chats)</strong>
+              </div>
+              <div class="sdb-bar-track"><div class="sdb-bar-fill" style="width: 6%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: LIVE CONVERSATIONS -->
+    <div class="sdb-tab-content" id="tab-conversations">
+      <div class="sdb-chat-layout">
+        <aside class="sdb-chat-sidebar">
+          <div class="sdb-chat-filter">
+            <input type="search" placeholder="Search customer or product..." id="sdb-chat-search">
+          </div>
+          <ul class="sdb-chat-items" id="sdb-chat-items">
+            <li class="sdb-chat-card is-selected" data-chat-id="chat-1">
+              <div class="sdb-chat-card-top">
+                <strong>Rahul Sharma</strong>
+                <span class="sdb-tag sdb-tag-green">Recovered</span>
+              </div>
+              <p class="sdb-chat-card-item">Everyday Cotton Kurta · ₹1,499</p>
+              <span class="sdb-chat-card-snip">"Thanks, L size confirmed. Just paid via UPI!"</span>
+            </li>
+            <li class="sdb-chat-card" data-chat-id="chat-2">
+              <div class="sdb-chat-card-top">
+                <strong>Pooja Verma</strong>
+                <span class="sdb-tag sdb-tag-blue">Active</span>
+              </div>
+              <p class="sdb-chat-card-item">Jaipuri Printed Anarkali · ₹2,899</p>
+              <span class="sdb-chat-card-snip">"Will it shrink after the first wash?"</span>
+            </li>
+            <li class="sdb-chat-card" data-chat-id="chat-3">
+              <div class="sdb-chat-card-top">
+                <strong>Karan Malhotra</strong>
+                <span class="sdb-tag sdb-tag-amber">Waiting</span>
+              </div>
+              <p class="sdb-chat-card-item">Handblock Dabu Shirt · ₹1,299</p>
+              <span class="sdb-chat-card-snip">Follow-up sent 10 mins ago. Waiting for reply.</span>
+            </li>
+            <li class="sdb-chat-card" data-chat-id="chat-4">
+              <div class="sdb-chat-card-top">
+                <strong>Neha Gupta</strong>
+                <span class="sdb-tag sdb-tag-purple">Handoff</span>
+              </div>
+              <p class="sdb-chat-card-item">Festive Saree Ensemble · ₹6,450</p>
+              <span class="sdb-chat-card-snip">Requested custom fall-pico alteration assistance.</span>
+            </li>
+          </ul>
+        </aside>
+
+        <div class="sdb-chat-view">
+          <div class="sdb-chat-view-header">
+            <div>
+              <h4 id="sdb-view-name">Rahul Sharma (+91 98712 34567)</h4>
+              <p id="sdb-view-cart">Cart: Everyday Cotton Kurta (Sage) · ₹1,499 · Checkout abandoned at 14:12</p>
+            </div>
+            <div class="sdb-chat-actions">
+              <button type="button" class="sdb-btn sdb-btn-secondary" id="sdb-takeover-btn">
+                <span>🙋 Take Over as Human</span>
+              </button>
+              <span class="sdb-tag sdb-tag-green" id="sdb-view-status">Recovered (Paid)</span>
+            </div>
+          </div>
+
+          <div class="sdb-transcript" id="sdb-transcript">
+            <div class="sdb-msg is-system">
+              <span>Checkout abandoned on Shopify at 14:12. 15-minute wait completed. Verified unpaid.</span>
+            </div>
+            <div class="sdb-msg is-saathi">
+              <small>Saathi (AI Sales Partner) · 14:27</small>
+              <p>Hi Rahul! I’m Saathi, Neer Studio’s assistant. We noticed you left the Everyday Cotton Kurta in your cart. Sizing ya fabric ko lekar koi doubt tha kya? Would love to help you find the right fit!</p>
+            </div>
+            <div class="sdb-msg is-shopper">
+              <small>Rahul Sharma · 14:29</small>
+              <p>Bhaiya mera chest 41 inch hai. Cart mein M size daala tha, fit aayega ya tight hoga?</p>
+            </div>
+            <div class="sdb-msg is-saathi">
+              <small>Saathi (AI Sales Partner) · 14:29</small>
+              <p>41-inch chest ke liye L size (40–42 inches) bilkul perfect aayega! M size 38–40 ke liye hai jo tight pad sakta hai. Maine aapki cart Size L par update kar di hai aur 7-day free exchange policy bhi hai. You can complete your order here: <a href="#saathi-sim-link">neerstudio.com/c/r9281a</a></p>
+            </div>
+            <div class="sdb-msg is-shopper">
+              <small>Rahul Sharma · 14:31</small>
+              <p>Great, thanks for clarifying. Just paid via UPI!</p>
+            </div>
+            <div class="sdb-msg is-system is-success-msg">
+              <span>✅ Shopify Webhook: Order #NEER-4192 Paid (₹1,499). Recovery completed!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: KNOWLEDGE BASE -->
+    <div class="sdb-tab-content" id="tab-knowledge">
+      <div class="sdb-panel">
+        <div class="sdb-panel-header">
+          <div>
+            <h3>Saathi AI Sales Brain &amp; Store Knowledge Base</h3>
+            <p>Teach Saathi your store’s sizing rules, fabric facts, and return policies so it never hallucinates.</p>
+          </div>
+          <button type="button" class="sdb-btn sdb-btn-primary" id="sdb-save-kb">Save Knowledge Base</button>
+        </div>
+
+        <div class="sdb-kb-grid">
+          <div class="sdb-kb-field">
+            <label for="sdb-kb-brand-tone"><strong>Brand Persona &amp; Tone of Voice</strong></label>
+            <select id="sdb-kb-brand-tone">
+              <option selected>Warm, Polite &amp; Helpful Indian Boutique (Hinglish/English friendly)</option>
+              <option>Minimal &amp; Premium Luxury Studio (English strictly)</option>
+              <option>Energetic &amp; Casual Streetwear / Gen-Z</option>
+            </select>
+            <small>Controls how Saathi speaks when replying to shoppers.</small>
+          </div>
+
+          <div class="sdb-kb-field">
+            <label for="sdb-kb-sizing"><strong>Sizing Chart &amp; Fit Recommendations</strong></label>
+            <textarea id="sdb-kb-sizing" rows="5">Kurta &amp; Shirts:
+- Size S: Chest 36–38 inches
+- Size M: Chest 38–40 inches
+- Size L: Chest 40–42 inches
+- Size XL: Chest 42–44 inches
+- Size XXL: Chest 44–46 inches
+*Recommendation rule: If customer measurement is in between, suggest the larger size for a relaxed comfortable drape.</textarea>
+            <small>Saathi strictly references this chart when shoppers ask "Which size will fit me?".</small>
+          </div>
+
+          <div class="sdb-kb-field">
+            <label for="sdb-kb-fabric"><strong>Fabric &amp; Care Details</strong></label>
+            <textarea id="sdb-kb-fabric" rows="4">All kurtas and stoles are 100% pre-shrunk organic cotton and handblock printed with natural dyes. First wash recommend gentle cold wash. Does not shrink more than 1%.</textarea>
+            <small>Used when customers ask about quality, shrinkage, or washing instructions.</small>
+          </div>
+
+          <div class="sdb-kb-field">
+            <label for="sdb-kb-policy"><strong>Shipping, Returns &amp; COD Rules</strong></label>
+            <textarea id="sdb-kb-policy" rows="4">Shipping: Free delivery across India within 3-5 business days.
+Returns: 7-day hassle-free exchange/return policy for unworn items with tags.
+Payment: UPI, Debit/Credit Card, Netbanking, and Cash on Delivery (COD) available for orders under ₹5,000.</textarea>
+            <small>Explains shipping, COD availability, and return reassurance.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: SETTINGS & WEBHOOK -->
+    <div class="sdb-tab-content" id="tab-settings">
+      <div class="sdb-panel">
+        <div class="sdb-panel-header">
+          <div>
+            <h3>Store Connection &amp; Webhook Setup</h3>
+            <p>Connect your Shopify or WooCommerce store in 60 seconds without code changes.</p>
+          </div>
+        </div>
+
+        <div class="sdb-setup-steps">
+          <div class="sdb-setup-box">
+            <h4>1. Your Dedicated Webhook Endpoint (Firebase Cloud Functions v2)</h4>
+            <p>Paste this URL inside your <strong>Shopify Admin &gt; Settings &gt; Notifications &gt; Webhooks</strong> (Event: <code>checkouts/create</code>):</p>
+            <div class="sdb-code-copy">
+              <code id="sdb-webhook-url">https://asia-south1-kahollabs-saathi.cloudfunctions.net/shopifyWebhook?storeId=neer</code>
+              <button type="button" class="sdb-btn-copy" id="sdb-copy-url">Copy URL</button>
+            </div>
+          </div>
+
+          <div class="sdb-setup-box">
+            <h4>2. Meta WhatsApp Business Sender</h4>
+            <div class="sdb-connected-row">
+              <span class="sdb-conn-icon">📱</span>
+              <div>
+                <strong>WhatsApp Cloud API: Connected</strong>
+                <p>Sender Phone: +91 98765 43210 (Verified Business Display Name: "Neer Studio")</p>
+              </div>
+              <span class="sdb-badge sdb-badge-green">Operational</span>
+            </div>
+          </div>
+
+          <div class="sdb-setup-box">
+            <h4>3. Outreach Guardrails</h4>
+            <div class="sdb-guard-grid">
+              <div>
+                <label for="sdb-wait-min"><strong>Delay Before Outreach</strong></label>
+                <input type="number" id="sdb-wait-min" value="15" min="5" max="60"> <span>minutes</span>
+                <small>Allows natural checkout completion before initiating sales conversation.</small>
+              </div>
+              <div>
+                <label for="sdb-max-chats"><strong>Max Follow-ups per Customer</strong></label>
+                <input type="number" id="sdb-max-chats" value="2" min="1" max="3">
+                <small>Strict anti-spam policy. Never pings after opt-out.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: SUPER ADMIN PLATFORM -->
+    <div class="sdb-tab-content" id="tab-super-admin">
+      <div class="sdb-panel">
+        <div class="sdb-panel-header">
+          <div>
+            <h3>Kahol Labs Platform Tenant Center</h3>
+            <p>Real-time monitoring of all active D2C brands powered by Saathi</p>
+          </div>
+          <span class="sdb-badge sdb-badge-gold">Owner Mode (Abhinadan Kahol)</span>
+        </div>
+
+        <div class="sdb-metrics-grid sdb-super-metrics">
+          <div class="sdb-metric-card sdb-card-accent">
+            <span class="sdb-metric-label">Total Monthly Recurring Revenue (MRR)</span>
+            <strong class="sdb-metric-value">₹1,03,976<small>/mo</small></strong>
+            <p class="sdb-metric-note">24 active paying stores across India</p>
+          </div>
+          <div class="sdb-metric-card">
+            <span class="sdb-metric-label">Total GMV Recovered for Stores</span>
+            <strong class="sdb-metric-value">₹18,42,800</strong>
+            <p class="sdb-metric-note">1,148 total abandoned checkouts closed</p>
+          </div>
+          <div class="sdb-metric-card">
+            <span class="sdb-metric-label">Platform Gross Margin</span>
+            <strong class="sdb-metric-value">88.4%</strong>
+            <p class="sdb-metric-note">Gemini Flash + Meta API cost: ~₹12,050/mo</p>
+          </div>
+        </div>
+
+        <div class="sdb-table-responsive">
+          <table class="sdb-table" id="sdb-tenants-table">
+            <thead>
+              <tr>
+                <th>Store Name &amp; Niche</th>
+                <th>Platform</th>
+                <th>Plan</th>
+                <th>Carts / Month</th>
+                <th>Recovered GMV</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Neer Studio</strong><br><small>Ethnic Sarees &amp; Kurtas · Jaipur</small></td>
+                <td><span class="sdb-platform sdb-platform-shopify">Shopify</span></td>
+                <td>Pro (₹4,999/mo)</td>
+                <td>162 carts</td>
+                <td><strong class="sdb-text-green">₹58,460</strong></td>
+                <td><span class="sdb-tag sdb-tag-green">Active 🟢</span></td>
+                <td><button type="button" class="sdb-btn-sm sdb-btn-toggle" data-action="pause">Pause</button></td>
+              </tr>
+              <tr>
+                <td><strong>Royal Ridaz Gear</strong><br><small>Bikers &amp; RE Accessories · Delhi</small></td>
+                <td><span class="sdb-platform sdb-platform-woo">WooCommerce</span></td>
+                <td>Pro (₹4,999/mo)</td>
+                <td>210 carts</td>
+                <td><strong class="sdb-text-green">₹84,200</strong></td>
+                <td><span class="sdb-tag sdb-tag-green">Active 🟢</span></td>
+                <td><button type="button" class="sdb-btn-sm sdb-btn-toggle" data-action="pause">Pause</button></td>
+              </tr>
+              <tr>
+                <td><strong>Mountain Bee Organics</strong><br><small>Himalayan Raw Honey · Shimla</small></td>
+                <td><span class="sdb-platform sdb-platform-shopify">Shopify</span></td>
+                <td>Starter (₹2,999/mo)</td>
+                <td>88 carts</td>
+                <td><strong class="sdb-text-green">₹31,400</strong></td>
+                <td><span class="sdb-tag sdb-tag-green">Active 🟢</span></td>
+                <td><button type="button" class="sdb-btn-sm sdb-btn-toggle" data-action="pause">Pause</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module Script with Firebase SDK Initialization -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
